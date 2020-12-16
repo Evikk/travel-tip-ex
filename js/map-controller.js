@@ -14,12 +14,15 @@ window.onload = () => {
 
     goToUserPosition();
     renderLocations()
-
-    document.querySelector('.btn').addEventListener('click', (ev) => {
-        console.log('Aha!', ev.target);
-        panTo(35.6895, 139.6917);
-    })
     document.querySelector('.my-location-btn').addEventListener('click', goToUserPosition)
+    document.querySelector('.go-to-address-btn').addEventListener('click', ()=>{
+        const address = document.querySelector('.address-input').value
+        locationService.getAddress(address).then(res => {
+            const pos = res.results[0].geometry.location
+            onGoToLocation(pos.lat, pos.lng)
+            saveCurrLocation(pos.lat, pos.lng)
+        })
+    })
 }
 
 function goToUserPosition() {
@@ -45,25 +48,18 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                     zoom: 15
                 })
             gGoogleMap.addListener('click', (ev) => {
-                const name = prompt('Place name?')
-                const currLoc = { id: makeId(), name: name, lat: ev.latLng.lat(), lng: ev.latLng.lng(), createdAt: Date.now(), updatedAt: Date.now() }
-                locationService.saveToUserLocations(currLoc)
+                saveCurrLocation(ev.latLng.lat(), ev.latLng.lng())
             })
             
         })
 }
 
-
-// const geocoder = new google.maps.Geocoder();
-// const infowindow = new google.maps.InfoWindow();
-// document.getElementById("submit").addEventListener("click", () => {
-//   geocodePlaceId(geocoder, map, infowindow);
-// });
-
-
-
-
-
+function saveCurrLocation(lat, lng){
+    const name = prompt('Place name?')
+    const currLoc = {id: makeId(), name: name, lat: lat, lng: lng, createdAt: Date.now(), updatedAt: Date.now()}
+    locationService.saveToUserLocations(currLoc)
+    renderLocations()
+}
 
 function renderLocations() {
     locationService.getLocations().then(locs => {
@@ -120,23 +116,6 @@ function _connectGoogleApi() {
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 }
-
-// function _connectGeocodeApi(){
-//     if (window.google) return Promise.resolve()
-//     const API_KEY = 'AIzaSyDb64W3a2V2JyNpij6IvG4V34JCLnEnzfc'; // daniel
-//     var elGoogleApi = document.createElement('script');
-//     elGoogleApi.src = `https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=${API_KEY}`;
-
-//     elGoogleApi.async = true;
-//     document.body.append(elGoogleApi);
-
-//     return new Promise((resolve, reject) => {
-//         elGoogleApi.onload = resolve;
-//         elGoogleApi.onerror = () => reject('Google script failed to load')
-//     })
-// }
-
-
 
 
 function doConfirm(msg) {

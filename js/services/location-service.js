@@ -3,6 +3,7 @@ import {storageService} from './storage-service.js'
 export const locationService = {
     getLocations,
     saveToUserLocations,
+    getAddress,
     removeLocation
 }
 const STORAGE_KEY = 'locations'
@@ -15,6 +16,13 @@ if (storageService.loadFromStorage(STORAGE_KEY).length > 0){
     gLocations.push(...storageService.loadFromStorage(STORAGE_KEY))
 }
 
+function getAddress(address) {
+    console.log(address);
+    const API_KEY = 'AIzaSyDb64W3a2V2JyNpij6IvG4V34JCLnEnzfc'
+    return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY}`)
+        .then((res) => res.json())
+        .catch((err) => { console.log('Had issues:', err) })
+}
 
 function getLocations() {
     return Promise.resolve(gLocations)
