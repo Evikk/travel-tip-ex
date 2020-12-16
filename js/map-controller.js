@@ -48,8 +48,9 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 const name = prompt('Place name?')
                 const currLoc = { id: makeId(), name: name, lat: ev.latLng.lat(), lng: ev.latLng.lng(), createdAt: Date.now(), updatedAt: Date.now() }
                 locationService.saveToUserLocations(currLoc)
+                renderLocations()
             })
-            
+
         })
 }
 
@@ -61,14 +62,10 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
 // });
 
 
-
-
-
-
 function renderLocations() {
     locationService.getLocations().then(locs => {
         console.log(...locs, locs);
-        const strHtmls = locs.map((loc) => {            
+        const strHtmls = locs.map((loc) => {
             return `<tr>
                     <td>${loc.id}</td>
                     <td>${loc.name}</td>
@@ -158,16 +155,20 @@ function makeId(length = 6) {
 function onRemoveLocation(id) {
     console.log('id', id)
     doConfirm('Really, delete all?')
-        .then(userDecision => { 
+        .then(userDecision => {
             if (userDecision) {
                 locationService.removeLocation(id).then(res => console.log(res))
             }
-         })
+        })
     renderLocations()
-    
+
 }
 
-function onGoToLocation(lat, lng){
-    panTo(lat,lng)
-    addMarker({lat: Number(lat), lng: Number(lng)})
+function onGoToLocation(lat, lng) {
+    panTo(lat, lng)
+    addMarker({ lat: Number(lat), lng: Number(lng) })
+}
+
+function copyUrlLink() {
+
 }
