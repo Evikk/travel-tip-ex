@@ -5,6 +5,7 @@ export const locationService = {
     saveToUserLocations,
     getAddress,
     getLocationByAddress,
+    getWeather,
     removeLocation
 }
 const STORAGE_KEY = 'locations'
@@ -28,7 +29,14 @@ function getAddress(address) {
 function getLocationByAddress(lat, lng) {
     console.log(lat, lng);
     const API_KEY = 'AIzaSyDb64W3a2V2JyNpij6IvG4V34JCLnEnzfc'
-    return fetch(` https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`)
+    return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`)
+        .then((res) => res.json())
+        .catch((err) => { console.log('Had issues:', err) })
+}
+
+function getWeather(lat, lng) {
+    const API_KEY = '47ed2ef324edc984c2b34b3df2b7fb4f'
+    return fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${API_KEY}`)
         .then((res) => res.json())
         .catch((err) => { console.log('Had issues:', err) })
 }

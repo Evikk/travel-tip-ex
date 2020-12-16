@@ -72,10 +72,10 @@ function renderLocations() {
             return `<tr>
                     <td>${loc.id}</td>
                     <td>${loc.name}</td>
-                    <td>${loc.lat}</td>
-                    <td>${loc.lng}</td>
-                    <td>${new Date (loc.createdAt)}</td>
-                    <td>${new Date (loc.updatedAt)}</td>
+                    <td>${loc.lat.toFixed(3)}</td>
+                    <td>${loc.lng.toFixed(3)}</td>
+                    <td>${new Date (loc.createdAt).toDateString()}</td>
+                    <td>${new Date (loc.updatedAt).toDateString()}</td>
                     <td><button onclick="onGoToLocation('${loc.lat}','${loc.lng}')">Go to location</button></td>
                     <td><button onclick="onRemoveLocation('${loc.id}')">Delete</button></td>
                 </tr>`
@@ -156,6 +156,16 @@ function onGoToLocation(lat, lng){
     })
     panTo(lat,lng)
     addMarker({lat: Number(lat), lng: Number(lng)})
+    locationService.getWeather(lat, lng).then(res => {
+        updateWeather(res.name, res.weather[0].main, res.main.temp, res.main.feels_like, )
+    })
     gLat = lat
     gLng = lng
+}
+
+function updateWeather(city, description, temp, feelsLike) {
+    document.querySelector('.city').innerText = city
+    document.querySelector('.curr-weather').innerText = description
+    document.querySelector('.temp-num').innerText = temp.toFixed(0)
+    document.querySelector('.like-temp').innerText = feelsLike
 }
