@@ -4,6 +4,8 @@ window.onRemoveLocation = onRemoveLocation
 window.onGoToLocation = onGoToLocation
 
 var gGoogleMap;
+var gLat
+var gLng
 
 window.onload = () => {
     initMap()
@@ -48,7 +50,10 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                     zoom: 15
                 })
             gGoogleMap.addListener('click', (ev) => {
-                saveCurrLocation(ev.latLng.lat(), ev.latLng.lng())
+                const lat = ev.latLng.lat()
+                const lng = ev.latLng.lng()
+                saveCurrLocation(lat, lng)
+                onGoToLocation(lat, lng)
             })
             
         })
@@ -63,7 +68,6 @@ function saveCurrLocation(lat, lng){
 
 function renderLocations() {
     locationService.getLocations().then(locs => {
-        console.log(...locs, locs);
         const strHtmls = locs.map((loc) => {            
             return `<tr>
                     <td>${loc.id}</td>
@@ -135,11 +139,10 @@ function makeId(length = 6) {
 }
 
 function onRemoveLocation(id) {
-    console.log('id', id)
     doConfirm('Really, delete all?')
         .then(userDecision => { 
             if (userDecision) {
-                locationService.removeLocation(id).then(res => console.log(res))
+                locationService.removeLocation(id).then()
             }
          })
     renderLocations()
@@ -147,7 +150,12 @@ function onRemoveLocation(id) {
 }
 
 function onGoToLocation(lat, lng){
-    document.querySelector('.curr-location').innerText = '!!'
+    locationService.getLocationByAddress(lat, lng).then(res => {
+        const locationName = res.results[0].formatted_address
+        document.querySelector('.curr-location').innerText = locationName
+    })
     panTo(lat,lng)
     addMarker({lat: Number(lat), lng: Number(lng)})
+    gLat = lat
+    gLng = lng
 }
