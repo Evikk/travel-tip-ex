@@ -2,7 +2,7 @@ import { locationService } from './services/location-service.js'
 
 
 console.log('locationService', locationService);
-
+window.onRemoveLocation = onRemoveLocation
 var gGoogleMap;
 
 window.onload = () => {
@@ -54,6 +54,7 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
         })
 }
 
+
 function renderLocations() {
     locationService.getLocations().then(locs => {
         const strHtmls = locs.map((loc) => {
@@ -71,6 +72,7 @@ function renderLocations() {
         document.querySelector('table tbody').innerHTML = strHtmls.join('')
     })
 }
+
 
 function addMarker(loc) {
     var marker = new google.maps.Marker({
@@ -109,6 +111,7 @@ function _connectGoogleApi() {
 }
 
 
+
 function doConfirm(msg) {
     const res = confirm('msg')
     return Promise.resolve(res);
@@ -126,6 +129,7 @@ function makeId(length = 6) {
 }
 
 function onRemoveLocation(id) {
+    console.log('id', id)
     doConfirm('Really, delete all?')
         .then(userDecision => { console.log('User Decided', userDecision) })
 }
