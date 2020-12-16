@@ -17,7 +17,7 @@ window.onload = () => {
     goToUserPosition();
     renderLocations()
     document.querySelector('.my-location-btn').addEventListener('click', goToUserPosition)
-    document.querySelector('.go-to-address-btn').addEventListener('click', ()=>{
+    document.querySelector('.go-to-address-btn').addEventListener('click', () => {
         const address = document.querySelector('.address-input').value
         locationService.getAddress(address).then(res => {
             const pos = res.results[0].geometry.location
@@ -55,20 +55,20 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 saveCurrLocation(lat, lng)
                 onGoToLocation(lat, lng)
             })
-            
+
         })
 }
 
-function saveCurrLocation(lat, lng){
+function saveCurrLocation(lat, lng) {
     const name = prompt('Place name?')
-    const currLoc = {id: makeId(), name: name, lat: lat, lng: lng, createdAt: Date.now(), updatedAt: Date.now()}
+    const currLoc = { id: makeId(), name: name, lat: lat, lng: lng, createdAt: Date.now(), updatedAt: Date.now() }
     locationService.saveToUserLocations(currLoc)
     renderLocations()
 }
 
 function renderLocations() {
     locationService.getLocations().then(locs => {
-        const strHtmls = locs.map((loc) => {            
+        const strHtmls = locs.map((loc) => {
             return `<tr>
                     <td>${loc.id}</td>
                     <td>${loc.name}</td>
@@ -140,22 +140,54 @@ function makeId(length = 6) {
 
 function onRemoveLocation(id) {
     doConfirm('Really, delete all?')
-        .then(userDecision => { 
+        .then(userDecision => {
             if (userDecision) {
                 locationService.removeLocation(id).then()
             }
-         })
+        })
     renderLocations()
-    
+
 }
 
-function onGoToLocation(lat, lng){
+function onGoToLocation(lat, lng) {
     locationService.getLocationByAddress(lat, lng).then(res => {
         const locationName = res.results[0].formatted_address
         document.querySelector('.curr-location').innerText = locationName
     })
-    panTo(lat,lng)
-    addMarker({lat: Number(lat), lng: Number(lng)})
+    panTo(lat, lng)
+    addMarker({ lat: Number(lat), lng: Number(lng) })
     gLat = lat
     gLng = lng
+
 }
+
+// console.log(gLat, gLng, 'what are you??');
+console.log(getUrlLink());
+
+function getUrlLink(gLat, gLng) {
+
+    const myURL = new URL('https://evikk.github.io/travel-tip-ex/')
+
+
+    myURL.searchParams.set('lat', 32.043321299999995)
+        // myURL.searchParams.set('lat', gLat)
+    myURL.searchParams.set('lng', 34.781776199999996)
+        // myURL.searchParams.set('lng', gLng)
+    myURL.href
+    console.log(myURL.href);
+}
+
+
+// const queryStr = `lat=${gLat}&lng=${gLng}`
+// const queryStr = `lat=32.043321299999995&lng=34.781776199999996`
+// const usp = new URLSearchParams(queryStr)
+
+// console.log(usp.toString(), 'nooo')
+
+// const usp = new URLSearchParams({
+//     lat: gLat,
+//     lng: gLng
+// })
+// const key_name = usp.get('lat')
+
+// console.log(('usp-i wish!', key_name));
