@@ -171,4 +171,12 @@ function onGoToLocation(lat, lng) {
 
 function copyUrlLink() {
 
+    const myParam = urlParams.get('myParam');
+    // const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams({
+        lat: glat,
+        lng: glng
+    });
+
+
 }
