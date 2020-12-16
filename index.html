@@ -1,60 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="css/style.css" />
+        <title>Travel Tip</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Travel Tip</title>
-</head>
+    <body>
+        <div class="main-container">
+            <header>
+                <div class="logo">
+                    <h1>Travel-tips</h1>
+                </div>
+                <div class="top-nav">
+                    <input
+                        type="text"
+                        class="address-input"
+                        placeholder="city/street"
+                    />
+                    <button class="go-to-address-btn">Go</button>
+                    <button class="my-location-btn">My Location</button>
+                </div>
+            </header>
 
-<body>
-    <header>
-        <div class="logo">
-            <h1>Travel-tips</h1>
+            <section>
+                <div class="location-title">
+                    <h2>Current Location: <span class="curr-location"></span></h2>
+                </div>
+                <button class="copy-location">Copy Location</button>
+            </section>
+
+            <main>
+                <div class="location-info">
+                    <table>
+                        <thead>
+                            <th>Id</th>
+                            <th>Location</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th colspan="2">Actions</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="map-container">
+                    <div id="map" style="height: 400px"></div>
+                </div>
+            </main>
         </div>
-        <div class="top-nav">
-            <input type="text" class="address-input" placeholder="city/street">
-            <button class="go-to-address-btn">Go</button>
-            <button class="my-location-btn">My Location</button>
-        </div>
-    </header>
 
-    <section>
-        <div class="curr-loction"></div>
-        <button class="copy-location">copy-location</button>
-    </section>
-
-    <main>
-        <div class="location-info">
-            <table>
-                <thead>
-                    <th>Id</th>
-                    <th>Location</th>
-                    <th>Latitude</th>
-                    <th>Longitude</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                    <th colspan="2">Actions</th>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="map-container">
-            <div id="map" style=" height: 400px;"></div>
-        </div>
-
-
-
-    </main>
-
-
-
-
-
-
-
-    <script type="module" src="js/map-controller.js"></script>
-</body>
-
+        <script type="module" src="js/map-controller.js"></script>
+    </body>
 </html>

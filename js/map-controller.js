@@ -147,6 +147,7 @@ function onRemoveLocation(id) {
 }
 
 function onGoToLocation(lat, lng){
+    document.querySelector('.curr-location').innerText = '!!'
     panTo(lat,lng)
     addMarker({lat: Number(lat), lng: Number(lng)})
 }
