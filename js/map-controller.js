@@ -1,8 +1,8 @@
 import { locationService } from './services/location-service.js'
 
-
-console.log('locationService', locationService);
 window.onRemoveLocation = onRemoveLocation
+window.onGoToLocation = onGoToLocation
+
 var gGoogleMap;
 
 window.onload = () => {
@@ -13,6 +13,7 @@ window.onload = () => {
         .catch((err) => console.log(err));
 
     goToUserPosition();
+    renderLocations()
 
     document.querySelector('.btn').addEventListener('click', (ev) => {
         console.log('Aha!', ev.target);
@@ -25,7 +26,6 @@ function goToUserPosition() {
     getUserPosition()
         .then(pos => {
             console.log('User position is:', pos.coords.latitude, pos.coords.longitude);
-            // gGoogleMap.setCenter({lat: pos.coords.latitude, lng: pos.coords.longitude})
             panTo(pos.coords.latitude, pos.coords.longitude)
             addMarker({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         })
@@ -36,7 +36,6 @@ function goToUserPosition() {
 
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log('InitMap');
     return _connectGoogleApi()
         .then(() => {
             console.log('google available');
@@ -49,15 +48,16 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
                 const name = prompt('Place name?')
                 const currLoc = { id: makeId(), name: name, lat: ev.latLng.lat(), lng: ev.latLng.lng(), createdAt: Date.now(), updatedAt: Date.now() }
                 locationService.saveToUserLocations(currLoc)
-                renderLocations()
             })
+            
         })
 }
 
 
 function renderLocations() {
     locationService.getLocations().then(locs => {
-        const strHtmls = locs.map((loc) => {
+        console.log(...locs, locs);
+        const strHtmls = locs.map((loc) => {            
             return `<tr>
                     <td>${loc.id}</td>
                     <td>${loc.name}</td>
@@ -65,7 +65,7 @@ function renderLocations() {
                     <td>${loc.lng}</td>
                     <td>${new Date (loc.createdAt)}</td>
                     <td>${new Date (loc.updatedAt)}</td>
-                    <td><button onclick="goToLocation('${loc.lat}','${loc.lng}')">Go to location</button></td>
+                    <td><button onclick="onGoToLocation('${loc.lat}','${loc.lng}')">Go to location</button></td>
                     <td><button onclick="onRemoveLocation('${loc.id}')">Delete</button></td>
                 </tr>`
         })
@@ -110,10 +110,8 @@ function _connectGoogleApi() {
     })
 }
 
-
-
 function doConfirm(msg) {
-    const res = confirm('msg')
+    const res = confirm(msg)
     return Promise.resolve(res);
 }
 
@@ -131,5 +129,16 @@ function makeId(length = 6) {
 function onRemoveLocation(id) {
     console.log('id', id)
     doConfirm('Really, delete all?')
-        .then(userDecision => { console.log('User Decided', userDecision) })
+        .then(userDecision => { 
+            if (userDecision) {
+                locationService.removeLocation(id).then(res => console.log(res))
+            }
+         })
+    renderLocations()
+    
+}
+
+function onGoToLocation(lat, lng){
+    panTo(lat,lng)
+    addMarker({lat: Number(lat), lng: Number(lng)})
 }
