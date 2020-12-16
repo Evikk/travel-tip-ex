@@ -55,6 +55,17 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
 }
 
 
+// const geocoder = new google.maps.Geocoder();
+// const infowindow = new google.maps.InfoWindow();
+// document.getElementById("submit").addEventListener("click", () => {
+//   geocodePlaceId(geocoder, map, infowindow);
+// });
+
+
+
+
+
+
 function renderLocations() {
     locationService.getLocations().then(locs => {
         const strHtmls = locs.map((loc) => {
@@ -109,6 +120,22 @@ function _connectGoogleApi() {
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 }
+
+// function _connectGeocodeApi(){
+//     if (window.google) return Promise.resolve()
+//     const API_KEY = 'AIzaSyDb64W3a2V2JyNpij6IvG4V34JCLnEnzfc'; // daniel
+//     var elGoogleApi = document.createElement('script');
+//     elGoogleApi.src = `https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=${API_KEY}`;
+
+//     elGoogleApi.async = true;
+//     document.body.append(elGoogleApi);
+
+//     return new Promise((resolve, reject) => {
+//         elGoogleApi.onload = resolve;
+//         elGoogleApi.onerror = () => reject('Google script failed to load')
+//     })
+// }
+
 
 
 
