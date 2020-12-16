@@ -1,11 +1,17 @@
 
+
 export const locationService = {
-    getLocations
+    getLocations,
+    saveToUserLocations
 }
 
 
-const  gLocations = [{lat: 17, lng: 19, name: 'Puki Home'}];
+const  gLocations = [];
 
 function getLocations() {
     return Promise.resolve(gLocations)
+}
+
+function saveToUserLocations(location) {    
+    gLocations.push(location)
 }

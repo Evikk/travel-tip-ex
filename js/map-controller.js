@@ -11,24 +11,32 @@ window.onload = () => {
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 });
         })
-        .catch(console.log('INIT MAP ERROR'));
+        .catch((err)=>console.log(err));
 
-    getUserPosition()
-        .then(pos => {
-            console.log('User position is:', pos.coords);
-        })
-        .catch(err => {
-            console.log('err!!!', err);
-        })
+    goToUserPosition();
 
     document.querySelector('.btn').addEventListener('click', (ev) => {
         console.log('Aha!', ev.target);
         panTo(35.6895, 139.6917);
     })
+    document.querySelector('.my-location-btn').addEventListener('click',goToUserPosition)
+}
+
+function goToUserPosition() {
+    getUserPosition()
+    .then(pos => {
+        console.log('User position is:', pos.coords.latitude, pos.coords.longitude);
+        // gGoogleMap.setCenter({lat: pos.coords.latitude, lng: pos.coords.longitude})
+        panTo(pos.coords.latitude, pos.coords.longitude)
+        addMarker({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+    })
+    .catch(err => {
+        console.log('err!!!', err);
+    })
 }
 
 
-export function initMap(lat = 32.0749831, lng = 34.9120554) {
+function initMap(lat = 32.0749831, lng = 34.9120554) {
     console.log('InitMap');
     return _connectGoogleApi()
         .then(() => {
@@ -38,8 +46,31 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
                 center: { lat, lng },
                 zoom: 15
             })
-            console.log('Map!', gGoogleMap);
+            gGoogleMap.addListener('click', (ev) => {
+                const name = prompt('Place name?')
+                const currLoc = {id: makeId(), name: name, lat: ev.latLng.lat(), lng: ev.latLng.lng(), createdAt: Date.now(), updatedAt: Date.now()}
+                locationService.saveToUserLocations(currLoc)
+                renderLocations()
+            })
         })
+}
+
+function renderLocations(){
+    locationService.getLocations().then(locs =>{
+    const strHtmls = locs.map((loc) => {
+        return `<tr>
+                    <td>${loc.id}</td>
+                    <td>${loc.name}</td>
+                    <td>${loc.lat}</td>
+                    <td>${loc.lng}</td>
+                    <td>${new Date (loc.createdAt)}</td>
+                    <td>${new Date (loc.updatedAt)}</td>
+                    <td><button onclick="goToLocation('${loc.lat}','${loc.lng}')">Go to location</button></td>
+                    <td><button onclick="onRemoveLocation('${loc.id}')">Delete</button></td>
+                </tr>`
+    })
+        document.querySelector('table tbody').innerHTML = strHtmls.join('')
+    })
 }
 
 function addMarker(loc) {
@@ -63,10 +94,10 @@ function getUserPosition() {
     })
 }
 
-
 function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
-    const API_KEY = ''; //TODO: Enter your API Key
+    // const API_KEY = 'AIzaSyDI6__u8gXVVI6E3ZGXIs703qEqfaHxJ1g';  // evyatar
+    const API_KEY = 'AIzaSyDb64W3a2V2JyNpij6IvG4V34JCLnEnzfc';  // daniel
     var elGoogleApi = document.createElement('script');
     elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`;
     elGoogleApi.async = true;
@@ -79,4 +110,23 @@ function _connectGoogleApi() {
 }
 
 
+function doConfirm(msg) {
+    const res = confirm('msg')
+    return Promise.resolve(res);
+}
 
+function makeId(length = 6) {
+    var txt = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (var i = 0; i < length; i++) {
+        txt += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+
+    return txt;
+}
+
+function onRemoveLocation(id) {
+    doConfirm('Really, delete all?')
+        .then(userDecision => {console.log('User Decided', userDecision)})
+} 
