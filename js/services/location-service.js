@@ -36,7 +36,7 @@ function getLocationByAddress(lat, lng) {
 
 function getWeather(lat, lng) {
     const API_KEY = '47ed2ef324edc984c2b34b3df2b7fb4f'
-    return fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${API_KEY}`)
+    return fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${API_KEY}`)
         .then((res) => res.json())
         .catch((err) => { console.log('Had issues:', err) })
 }
